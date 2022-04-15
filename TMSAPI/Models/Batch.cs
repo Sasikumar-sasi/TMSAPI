@@ -15,6 +15,8 @@ namespace TMSAPI.Models
         public int TrainerID { get; set; }
         public virtual Trainer Trainers { get; set; }
 
+        List <Trainee> Trainees { get; set; }
+
 
     }
 }

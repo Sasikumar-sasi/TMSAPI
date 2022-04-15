@@ -38,9 +38,9 @@ namespace TMSAPI.Models
 
         [Required, MaxLength(15)]
         public string Password { get; set; }
-        
+
         [ForeignKey("BatchID")]
-        public int BatchID { get; set; }
+        public int? BatchID { get; set; } = 0;
         public virtual Batch Batchs { get; set; }
 
     }
