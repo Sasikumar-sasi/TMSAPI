@@ -12,8 +12,8 @@ using TMSAPI.Models;
 namespace TMSAPI.Migrations
 {
     [DbContext(typeof(AppDBContext))]
-    [Migration("20220414104457_TraineeAlter")]
-    partial class TraineeAlter
+    [Migration("20220415152724_latest2")]
+    partial class latest2
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -124,12 +124,7 @@ namespace TMSAPI.Migrations
                     b.Property<string>("Stream")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("TrainerID")
-                        .HasColumnType("int");
-
                     b.HasKey("BatchID");
-
-                    b.HasIndex("TrainerID");
 
                     b.ToTable("batch");
                 });
@@ -277,6 +272,9 @@ namespace TMSAPI.Migrations
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
+                    b.Property<int?>("BatchID")
+                        .HasColumnType("int");
+
                     b.Property<string>("DOB")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -325,6 +323,10 @@ namespace TMSAPI.Migrations
                         .HasColumnType("nvarchar(30)");
 
                     b.HasKey("TrainerID");
+
+                    b.HasIndex("BatchID")
+                        .IsUnique()
+                        .HasFilter("[BatchID] IS NOT NULL");
 
                     b.ToTable("trainers");
                 });
@@ -400,17 +402,6 @@ namespace TMSAPI.Migrations
                     b.Navigation("Batchs");
                 });
 
-            modelBuilder.Entity("TMSAPI.Models.Batch", b =>
-                {
-                    b.HasOne("TMSAPI.Models.Trainer", "Trainers")
-                        .WithMany()
-                        .HasForeignKey("TrainerID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Trainers");
-                });
-
             modelBuilder.Entity("TMSAPI.Models.Trainee", b =>
                 {
                     b.HasOne("TMSAPI.Models.Batch", "Batchs")
@@ -418,6 +409,20 @@ namespace TMSAPI.Migrations
                         .HasForeignKey("BatchID");
 
                     b.Navigation("Batchs");
+                });
+
+            modelBuilder.Entity("TMSAPI.Models.Trainer", b =>
+                {
+                    b.HasOne("TMSAPI.Models.Batch", "Batch")
+                        .WithOne("Trainers")
+                        .HasForeignKey("TMSAPI.Models.Trainer", "BatchID");
+
+                    b.Navigation("Batch");
+                });
+
+            modelBuilder.Entity("TMSAPI.Models.Batch", b =>
+                {
+                    b.Navigation("Trainers");
                 });
 #pragma warning restore 612, 618
         }

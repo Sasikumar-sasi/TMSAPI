@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using TMSAPI.Models;
 
@@ -11,9 +12,10 @@ using TMSAPI.Models;
 namespace TMSAPI.Migrations
 {
     [DbContext(typeof(AppDBContext))]
-    partial class AppDBContextModelSnapshot : ModelSnapshot
+    [Migration("20220415150802_leatest")]
+    partial class leatest
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -68,6 +70,9 @@ namespace TMSAPI.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("AssessmentID"), 1L, 1);
 
+                    b.Property<string>("Answer")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("AssessmentName")
                         .IsRequired()
                         .HasMaxLength(30)
@@ -119,12 +124,7 @@ namespace TMSAPI.Migrations
                     b.Property<string>("Stream")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("TrainerID")
-                        .HasColumnType("int");
-
                     b.HasKey("BatchID");
-
-                    b.HasIndex("TrainerID");
 
                     b.ToTable("batch");
                 });
@@ -272,6 +272,9 @@ namespace TMSAPI.Migrations
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
+                    b.Property<int?>("BatchID")
+                        .HasColumnType("int");
+
                     b.Property<string>("DOB")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -320,6 +323,10 @@ namespace TMSAPI.Migrations
                         .HasColumnType("nvarchar(30)");
 
                     b.HasKey("TrainerID");
+
+                    b.HasIndex("BatchID")
+                        .IsUnique()
+                        .HasFilter("[BatchID] IS NOT NULL");
 
                     b.ToTable("trainers");
                 });
@@ -384,33 +391,6 @@ namespace TMSAPI.Migrations
                     b.ToTable("trainersManager");
                 });
 
-            modelBuilder.Entity("TMSClient.Models.Answer", b =>
-                {
-                    b.Property<int>("AnswerID")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("AnswerID"), 1L, 1);
-
-                    b.Property<string>("AnswerPath")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("AssessmentID")
-                        .HasColumnType("int");
-
-                    b.Property<int>("TraineeID")
-                        .HasColumnType("int");
-
-                    b.HasKey("AnswerID");
-
-                    b.HasIndex("AssessmentID");
-
-                    b.HasIndex("TraineeID");
-
-                    b.ToTable("answers");
-                });
-
             modelBuilder.Entity("TMSAPI.Models.Assessment", b =>
                 {
                     b.HasOne("TMSAPI.Models.Batch", "Batchs")
@@ -422,15 +402,6 @@ namespace TMSAPI.Migrations
                     b.Navigation("Batchs");
                 });
 
-            modelBuilder.Entity("TMSAPI.Models.Batch", b =>
-                {
-                    b.HasOne("TMSAPI.Models.Trainer", "Trainers")
-                        .WithMany()
-                        .HasForeignKey("TrainerID");
-
-                    b.Navigation("Trainers");
-                });
-
             modelBuilder.Entity("TMSAPI.Models.Trainee", b =>
                 {
                     b.HasOne("TMSAPI.Models.Batch", "Batchs")
@@ -440,23 +411,16 @@ namespace TMSAPI.Migrations
                     b.Navigation("Batchs");
                 });
 
-            modelBuilder.Entity("TMSClient.Models.Answer", b =>
+            modelBuilder.Entity("TMSAPI.Models.Trainer", b =>
                 {
-                    b.HasOne("TMSAPI.Models.Assessment", "assessment")
-                        .WithMany()
-                        .HasForeignKey("AssessmentID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                    b.HasOne("TMSAPI.Models.Batch", null)
+                        .WithOne("Trainers")
+                        .HasForeignKey("TMSAPI.Models.Trainer", "BatchID");
+                });
 
-                    b.HasOne("TMSAPI.Models.Trainee", "Trainee")
-                        .WithMany()
-                        .HasForeignKey("TraineeID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Trainee");
-
-                    b.Navigation("assessment");
+            modelBuilder.Entity("TMSAPI.Models.Batch", b =>
+                {
+                    b.Navigation("Trainers");
                 });
 #pragma warning restore 612, 618
         }

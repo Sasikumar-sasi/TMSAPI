@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace TMSAPI.Models
 {
@@ -13,8 +14,8 @@ namespace TMSAPI.Models
         [Required, MaxLength(15)]
         public string PhoneNumber { get; set; } = "NA";
 
-        [Required,MaxLength(30)]
-        public string SkillSet { get; set; }
+        [Required, MaxLength(30)]
+        public string SkillSet { get; set; } = "NA";
 
         [Required, Range(0, 20)]
         public int Experience { get; set; } = 0;
@@ -37,6 +38,7 @@ namespace TMSAPI.Models
 
         [Required, MaxLength(15)]
         public string Password { get; set; }
-       
+        
+
     }
 }

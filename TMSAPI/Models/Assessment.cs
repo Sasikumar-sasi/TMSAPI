@@ -19,7 +19,7 @@ namespace TMSAPI.Models
         public string EndingTime { get; set; }
 
         public string Question { get; set; } = "NA";
-        public string Answer { get; set; } = "NA";
+   
 
 
         [ForeignKey("BatchID")]

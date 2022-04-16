@@ -4,7 +4,7 @@
 
 namespace TMSAPI.Migrations
 {
-    public partial class batchUpdated : Migration
+    public partial class latest2 : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {

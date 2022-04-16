@@ -7,15 +7,16 @@ namespace TMSAPI.Models
     {
         [Key]
         public int BatchID { get; set; }
-        [Required,MaxLength(30)]
+        [Required, MaxLength(30)]
         public string BatchName { get; set; }
 
         public string Stream { get; set; }
-        [ForeignKey("TrainerID")]
-        public int TrainerID { get; set; }
-        public virtual Trainer Trainers { get; set; }
 
-        List <Trainee> Trainees { get; set; }
+        [ForeignKey("TrainerID")]
+        public int? TrainerID { get; set; }
+        public virtual Trainer Trainers { get; set; }
+        
+        ICollection<Trainee> Trainees { get; set; } = null;
 
 
     }

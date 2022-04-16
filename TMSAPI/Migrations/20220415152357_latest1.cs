@@ -4,7 +4,7 @@
 
 namespace TMSAPI.Migrations
 {
-    public partial class TraineeAltered : Migration
+    public partial class latest1 : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
