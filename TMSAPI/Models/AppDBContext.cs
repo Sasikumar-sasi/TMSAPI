@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using TMSClient.Models;
+using TMSAPI.Models;
 
 namespace TMSAPI.Models
 {
@@ -17,5 +18,6 @@ namespace TMSAPI.Models
         public DbSet<TrainerManager> trainersManager { get; set; }
         public DbSet<Assessment> assessments { get; set; }
         public DbSet<Answer> answers { get; set; }
+        public DbSet<Score> Score { get; set; }
     }
 }

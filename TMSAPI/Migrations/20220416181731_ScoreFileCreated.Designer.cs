@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using TMSAPI.Models;
 
@@ -11,9 +12,10 @@ using TMSAPI.Models;
 namespace TMSAPI.Migrations
 {
     [DbContext(typeof(AppDBContext))]
-    partial class AppDBContextModelSnapshot : ModelSnapshot
+    [Migration("20220416181731_ScoreFileCreated")]
+    partial class ScoreFileCreated
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
