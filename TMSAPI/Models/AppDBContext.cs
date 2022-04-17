@@ -10,6 +10,14 @@ namespace TMSAPI.Models
         {
 
         }
+
+        //protected override void OnModelCreating(ModelBuilder modelBuilder)
+        //{
+        //    modelBuilder.Entity<Score>()
+        //        .HasOne(tr=>tr.Trainee)
+        //        .WithMany(sc=>sc.sc)
+        //}
+
         public DbSet<Admin> admins { get; set; }
         public DbSet<Trainee> trainees { get; set; }
         public DbSet<Trainer> trainers { get; set; }

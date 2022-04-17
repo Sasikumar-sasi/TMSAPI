@@ -14,5 +14,8 @@ namespace TMSAPI.Models
         [Required]
         public int GainedScore { get; set; }
         public int TotalScore { get; set; } = 100;
+
+        public virtual Assessment Assessment { get; set; }
+        public virtual Trainee Trainee { get; set; }
     }
 }

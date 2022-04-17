@@ -43,6 +43,6 @@ namespace TMSAPI.Models
         public int? BatchID { get; set; }
         public virtual Batch Batchs { get; set; }
 
-
+        List<Score> scores { get; set; }
     }
 }
