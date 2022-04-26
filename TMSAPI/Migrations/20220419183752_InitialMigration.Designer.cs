@@ -12,8 +12,8 @@ using TMSAPI.Models;
 namespace TMSAPI.Migrations
 {
     [DbContext(typeof(AppDBContext))]
-    [Migration("20220416050540_AnswerfileAdded1")]
-    partial class AnswerfileAdded1
+    [Migration("20220419183752_InitialMigration")]
+    partial class InitialMigration
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -121,9 +121,6 @@ namespace TMSAPI.Migrations
                     b.Property<string>("Stream")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("TraineeID")
-                        .HasColumnType("int");
-
                     b.Property<int?>("TrainerID")
                         .HasColumnType("int");
 
@@ -194,6 +191,35 @@ namespace TMSAPI.Migrations
                     b.ToTable("hr");
                 });
 
+            modelBuilder.Entity("TMSAPI.Models.Score", b =>
+                {
+                    b.Property<int>("ScoreID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ScoreID"), 1L, 1);
+
+                    b.Property<int>("AssessmentID")
+                        .HasColumnType("int");
+
+                    b.Property<int>("GainedScore")
+                        .HasColumnType("int");
+
+                    b.Property<int>("TotalScore")
+                        .HasColumnType("int");
+
+                    b.Property<int>("TraineeID")
+                        .HasColumnType("int");
+
+                    b.HasKey("ScoreID");
+
+                    b.HasIndex("AssessmentID");
+
+                    b.HasIndex("TraineeID");
+
+                    b.ToTable("Score");
+                });
+
             modelBuilder.Entity("TMSAPI.Models.Trainee", b =>
                 {
                     b.Property<int>("TraineeID")
@@ -206,6 +232,9 @@ namespace TMSAPI.Migrations
                         .IsRequired()
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
+
+                    b.Property<int?>("BatchID")
+                        .HasColumnType("int");
 
                     b.Property<string>("DOB")
                         .IsRequired()
@@ -255,6 +284,8 @@ namespace TMSAPI.Migrations
                         .HasColumnType("nvarchar(30)");
 
                     b.HasKey("TraineeID");
+
+                    b.HasIndex("BatchID");
 
                     b.ToTable("trainees");
                 });
@@ -429,6 +460,34 @@ namespace TMSAPI.Migrations
                         .HasForeignKey("TrainerID");
 
                     b.Navigation("Trainers");
+                });
+
+            modelBuilder.Entity("TMSAPI.Models.Score", b =>
+                {
+                    b.HasOne("TMSAPI.Models.Assessment", "Assessment")
+                        .WithMany()
+                        .HasForeignKey("AssessmentID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("TMSAPI.Models.Trainee", "Trainee")
+                        .WithMany()
+                        .HasForeignKey("TraineeID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Assessment");
+
+                    b.Navigation("Trainee");
+                });
+
+            modelBuilder.Entity("TMSAPI.Models.Trainee", b =>
+                {
+                    b.HasOne("TMSAPI.Models.Batch", "Batchs")
+                        .WithMany()
+                        .HasForeignKey("BatchID");
+
+                    b.Navigation("Batchs");
                 });
 
             modelBuilder.Entity("TMSClient.Models.Answer", b =>

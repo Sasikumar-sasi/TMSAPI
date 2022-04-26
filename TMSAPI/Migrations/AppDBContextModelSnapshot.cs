@@ -211,6 +211,10 @@ namespace TMSAPI.Migrations
 
                     b.HasKey("ScoreID");
 
+                    b.HasIndex("AssessmentID");
+
+                    b.HasIndex("TraineeID");
+
                     b.ToTable("Score");
                 });
 
@@ -454,6 +458,25 @@ namespace TMSAPI.Migrations
                         .HasForeignKey("TrainerID");
 
                     b.Navigation("Trainers");
+                });
+
+            modelBuilder.Entity("TMSAPI.Models.Score", b =>
+                {
+                    b.HasOne("TMSAPI.Models.Assessment", "Assessment")
+                        .WithMany()
+                        .HasForeignKey("AssessmentID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("TMSAPI.Models.Trainee", "Trainee")
+                        .WithMany()
+                        .HasForeignKey("TraineeID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Assessment");
+
+                    b.Navigation("Trainee");
                 });
 
             modelBuilder.Entity("TMSAPI.Models.Trainee", b =>

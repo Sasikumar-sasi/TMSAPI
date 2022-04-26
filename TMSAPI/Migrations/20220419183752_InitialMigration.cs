@@ -4,7 +4,7 @@
 
 namespace TMSAPI.Migrations
 {
-    public partial class InitialCreation : Migration
+    public partial class InitialMigration : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -15,6 +15,7 @@ namespace TMSAPI.Migrations
                     AdminId = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     AdminName = table.Column<string>(type: "nvarchar(30)", maxLength: 30, nullable: false),
+                    Role = table.Column<string>(type: "nvarchar(30)", maxLength: 30, nullable: false),
                     PhoneNumber = table.Column<string>(type: "nvarchar(15)", maxLength: 15, nullable: false),
                     EmailID = table.Column<string>(type: "nvarchar(30)", maxLength: 30, nullable: false),
                     Password = table.Column<string>(type: "nvarchar(15)", maxLength: 15, nullable: false)
@@ -22,21 +23,6 @@ namespace TMSAPI.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_admins", x => x.AdminId);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "batch",
-                columns: table => new
-                {
-                    BatchID = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    BatchName = table.Column<string>(type: "nvarchar(30)", maxLength: 30, nullable: false),
-                    Stream = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    TrainerID = table.Column<int>(type: "int", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_batch", x => x.BatchID);
                 });
 
             migrationBuilder.CreateTable(
@@ -107,6 +93,26 @@ namespace TMSAPI.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "batch",
+                columns: table => new
+                {
+                    BatchID = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    BatchName = table.Column<string>(type: "nvarchar(30)", maxLength: 30, nullable: false),
+                    Stream = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    TrainerID = table.Column<int>(type: "int", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_batch", x => x.BatchID);
+                    table.ForeignKey(
+                        name: "FK_batch_trainers_TrainerID",
+                        column: x => x.TrainerID,
+                        principalTable: "trainers",
+                        principalColumn: "TrainerID");
+                });
+
+            migrationBuilder.CreateTable(
                 name: "assessments",
                 columns: table => new
                 {
@@ -118,7 +124,6 @@ namespace TMSAPI.Migrations
                     StartingTime = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     EndingTime = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Question = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Answer = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     BatchID = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
@@ -149,7 +154,7 @@ namespace TMSAPI.Migrations
                     Position = table.Column<string>(type: "nvarchar(30)", maxLength: 30, nullable: false),
                     EmailID = table.Column<string>(type: "nvarchar(30)", maxLength: 30, nullable: false),
                     Password = table.Column<string>(type: "nvarchar(15)", maxLength: 15, nullable: false),
-                    BatchID = table.Column<int>(type: "int", nullable: false)
+                    BatchID = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -158,14 +163,93 @@ namespace TMSAPI.Migrations
                         name: "FK_trainees_batch_BatchID",
                         column: x => x.BatchID,
                         principalTable: "batch",
-                        principalColumn: "BatchID",
+                        principalColumn: "BatchID");
+                });
+
+            migrationBuilder.CreateTable(
+                name: "answers",
+                columns: table => new
+                {
+                    AnswerID = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    AnswerPath = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    AssessmentID = table.Column<int>(type: "int", nullable: false),
+                    TraineeID = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_answers", x => x.AnswerID);
+                    table.ForeignKey(
+                        name: "FK_answers_assessments_AssessmentID",
+                        column: x => x.AssessmentID,
+                        principalTable: "assessments",
+                        principalColumn: "AssessmentID",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_answers_trainees_TraineeID",
+                        column: x => x.TraineeID,
+                        principalTable: "trainees",
+                        principalColumn: "TraineeID",
                         onDelete: ReferentialAction.Cascade);
                 });
+
+            migrationBuilder.CreateTable(
+                name: "Score",
+                columns: table => new
+                {
+                    ScoreID = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    AssessmentID = table.Column<int>(type: "int", nullable: false),
+                    TraineeID = table.Column<int>(type: "int", nullable: false),
+                    GainedScore = table.Column<int>(type: "int", nullable: false),
+                    TotalScore = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Score", x => x.ScoreID);
+                    table.ForeignKey(
+                        name: "FK_Score_assessments_AssessmentID",
+                        column: x => x.AssessmentID,
+                        principalTable: "assessments",
+                        principalColumn: "AssessmentID",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Score_trainees_TraineeID",
+                        column: x => x.TraineeID,
+                        principalTable: "trainees",
+                        principalColumn: "TraineeID",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateIndex(
+                name: "IX_answers_AssessmentID",
+                table: "answers",
+                column: "AssessmentID");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_answers_TraineeID",
+                table: "answers",
+                column: "TraineeID");
 
             migrationBuilder.CreateIndex(
                 name: "IX_assessments_BatchID",
                 table: "assessments",
                 column: "BatchID");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_batch_TrainerID",
+                table: "batch",
+                column: "TrainerID");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Score_AssessmentID",
+                table: "Score",
+                column: "AssessmentID");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Score_TraineeID",
+                table: "Score",
+                column: "TraineeID");
 
             migrationBuilder.CreateIndex(
                 name: "IX_trainees_BatchID",
@@ -179,22 +263,28 @@ namespace TMSAPI.Migrations
                 name: "admins");
 
             migrationBuilder.DropTable(
-                name: "assessments");
+                name: "answers");
 
             migrationBuilder.DropTable(
                 name: "hr");
 
             migrationBuilder.DropTable(
-                name: "trainees");
-
-            migrationBuilder.DropTable(
-                name: "trainers");
+                name: "Score");
 
             migrationBuilder.DropTable(
                 name: "trainersManager");
 
             migrationBuilder.DropTable(
+                name: "assessments");
+
+            migrationBuilder.DropTable(
+                name: "trainees");
+
+            migrationBuilder.DropTable(
                 name: "batch");
+
+            migrationBuilder.DropTable(
+                name: "trainers");
         }
     }
 }
